@@ -1,0 +1,26 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /waitlist/{docId} {
+      allow create: if request.resource.data.keys().hasAll(['email', 'role', 'city', 'locale'])
+        && request.resource.data.email is string
+        && request.resource.data.email.size() > 5;
+      allow read, update, delete: if false;
+    }
+
+    match /buildingPlans/{planId} {
+      allow read: if resource.data.status == 'active';
+      allow write: if false;
+    }
+
+    match /marketEvents/{eventId} {
+      allow read: if resource.data.status == 'published' || resource.data.status == 'live';
+      allow write: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
