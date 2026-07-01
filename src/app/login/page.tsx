@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { appCopy } from "@/lib/i18n/app-copy";
+import { FIREBASE_AUTH_SETUP_URL, getAuthErrorMessage } from "@/lib/auth/errors";
 import type { UserRole } from "@/types/user";
 
 export default function LoginPage() {
@@ -14,6 +15,7 @@ export default function LoginPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [role, setRole] = useState<UserRole>("organizer");
   const [error, setError] = useState("");
+  const [showAuthSetup, setShowAuthSetup] = useState(false);
   const [pending, setPending] = useState(false);
 
   useEffect(() => {
@@ -33,6 +35,7 @@ export default function LoginPage() {
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
+    setShowAuthSetup(false);
     setPending(true);
 
     const fd = new FormData(e.currentTarget);
@@ -47,8 +50,10 @@ export default function LoginPage() {
         await signUpEmail(email, password, displayName, role);
       }
       router.push("/dashboard");
-    } catch {
-      setError(c.error);
+    } catch (err) {
+      const msg = getAuthErrorMessage(err, c.error, c.authNotEnabled);
+      setError(msg);
+      setShowAuthSetup(msg === c.authNotEnabled);
     } finally {
       setPending(false);
     }
@@ -56,12 +61,15 @@ export default function LoginPage() {
 
   async function handleGoogle() {
     setError("");
+    setShowAuthSetup(false);
     setPending(true);
     try {
       await signInGoogle(role);
       router.push("/dashboard");
-    } catch {
-      setError(c.error);
+    } catch (err) {
+      const msg = getAuthErrorMessage(err, c.error, c.authNotEnabled);
+      setError(msg);
+      setShowAuthSetup(msg === c.authNotEnabled);
     } finally {
       setPending(false);
     }
@@ -103,6 +111,7 @@ export default function LoginPage() {
             name="email"
             type="email"
             required
+            autoComplete="email"
             placeholder={c.email}
             className="w-full rounded-xl border border-olive-800/15 px-4 py-3"
           />
@@ -111,11 +120,22 @@ export default function LoginPage() {
             type="password"
             required
             minLength={6}
+            autoComplete={mode === "signup" ? "new-password" : "current-password"}
             placeholder={c.password}
             className="w-full rounded-xl border border-olive-800/15 px-4 py-3"
           />
 
           {error && <p className="text-sm text-red-700">{error}</p>}
+          {showAuthSetup && (
+            <a
+              href={FIREBASE_AUTH_SETUP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block rounded-xl border border-terracotta-500/30 bg-sun-100/50 px-4 py-3 text-center text-sm font-medium text-olive-900 underline"
+            >
+              {c.authSetupLink} →
+            </a>
+          )}
 
           <button
             type="submit"

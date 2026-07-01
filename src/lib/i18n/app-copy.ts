@@ -14,6 +14,9 @@ export const appCopy = {
     switchSignUp: "הירשמו",
     switchSignIn: "התחברו",
     error: "שגיאה בהתחברות",
+    authNotEnabled:
+      "Authentication לא מופעל ב-Firebase. פתחו את הקונסול → Authentication → Get started → הפעילו Email/Password.",
+    authSetupLink: "פתיחת Firebase Authentication",
   },
   dashboard: {
     title: "לוח בקרה",
