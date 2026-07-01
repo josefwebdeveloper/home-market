@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Heebo } from "next/font/google";
+import { ClientProviders } from "@/components/ClientProviders";
 import "./globals.css";
 
 const heebo = Heebo({
@@ -32,7 +33,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="he" dir="rtl" className={`${heebo.variable} ${fraunces.variable} h-full`}>
-      <body className="min-h-full antialiased">{children}</body>
+      <body className="min-h-full antialiased">
+        <ClientProviders>{children}</ClientProviders>
+      </body>
     </html>
   );
 }

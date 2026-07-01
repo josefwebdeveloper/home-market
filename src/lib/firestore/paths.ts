@@ -1,4 +1,5 @@
 export const COLLECTIONS = {
+  users: "users",
   buildings: "buildings",
   buildingPlans: "buildingPlans",
   marketEvents: "marketEvents",

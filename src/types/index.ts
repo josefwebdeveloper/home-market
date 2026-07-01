@@ -1,5 +1,6 @@
 export * from "./building-plan";
 export * from "./market-event";
+export * from "./user";
 
 export interface WaitlistEntry {
   id?: string;

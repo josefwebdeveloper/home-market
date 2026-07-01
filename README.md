@@ -22,10 +22,13 @@ npm run dev
 
 ## Firebase
 
-1. Create a Firebase project
-2. Enable Firestore
-3. Add a web app → copy config to `.env.local`
-4. Deploy rules: `firebase deploy --only firestore:rules`
+Project: **home-market-il** · [Console](https://console.firebase.google.com/project/home-market-il/overview)
+
+1. Copy `.env.example` → `.env.local` (or pull from Vercel: `vercel env pull`)
+2. Firestore database: `(default)` in **eur3** (Europe)
+3. Deploy rules: `npm run firebase:deploy-rules`
+
+Collections: `waitlist`, `buildingPlans`, `marketEvents`, …
 
 ## Deploy
 

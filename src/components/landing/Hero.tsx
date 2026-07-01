@@ -26,17 +26,17 @@ export function Hero() {
 
         <div className="animate-rise mt-10 flex flex-wrap gap-4 opacity-0 [animation-delay:500ms] [animation-fill-mode:forwards]">
           <a
-            href="#waitlist"
+            href="/login"
             className="group inline-flex items-center gap-2 rounded-full bg-olive-900 px-7 py-3.5 text-sm font-semibold text-cream-50 shadow-lg shadow-olive-900/20 transition hover:bg-terracotta-600"
           >
             {t.ctaPrimary}
             <span className="transition group-hover:translate-x-0.5">→</span>
           </a>
           <a
-            href="#how"
+            href="/dashboard"
             className="inline-flex items-center rounded-full border border-olive-800/20 bg-cream-50/60 px-7 py-3.5 text-sm font-semibold text-olive-900 backdrop-blur transition hover:border-olive-800/40"
           >
-            {t.ctaSecondary}
+            Dashboard
           </a>
         </div>
 

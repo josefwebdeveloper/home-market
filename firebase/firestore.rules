@@ -2,6 +2,14 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
     match /waitlist/{docId} {
       allow create: if request.resource.data.keys().hasAll(['email', 'role', 'city', 'locale'])
         && request.resource.data.email is string
@@ -9,14 +17,31 @@ service cloud.firestore {
       allow read, update, delete: if false;
     }
 
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId)
+        && request.resource.data.keys().hasAll(['email', 'displayName', 'role']);
+      allow update: if isOwner(userId);
+      allow delete: if false;
+    }
+
     match /buildingPlans/{planId} {
-      allow read: if resource.data.status == 'active';
-      allow write: if false;
+      allow read: if resource.data.status == 'active'
+        || (isSignedIn() && resource.data.createdBy == request.auth.uid);
+      allow create: if isSignedIn()
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.keys().hasAll(['buildingName', 'city', 'maxStalls', 'status']);
+      allow update: if isSignedIn() && resource.data.createdBy == request.auth.uid;
+      allow delete: if false;
     }
 
     match /marketEvents/{eventId} {
-      allow read: if resource.data.status == 'published' || resource.data.status == 'live';
-      allow write: if false;
+      allow read: if resource.data.status in ['published', 'live']
+        || (isSignedIn() && resource.data.organizerId == request.auth.uid);
+      allow create: if isSignedIn()
+        && request.resource.data.organizerId == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.organizerId == request.auth.uid;
+      allow delete: if false;
     }
 
     match /{document=**} {
